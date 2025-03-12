@@ -19,13 +19,16 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          echo "SSH setup complete!"  # Отладочная информация
 
       - name: Deploy to VPS
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          echo "Starting SSH connection..."  # Отладочная информация
+          ssh -T ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             cd ~/pizza-project
             git pull origin main
             docker-compose down
             docker-compose up --build -d
+            echo "Deploy complete!"  # Отладочная информация
           EOF
 
